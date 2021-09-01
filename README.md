@@ -1,2 +1,2 @@
 # library
-A small library app to track of books the user has read or wants to read.
+A small library app to keep track of books the user has read or wants to read.
