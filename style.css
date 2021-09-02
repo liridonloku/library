@@ -87,6 +87,7 @@ body{
     align-items: center;
     text-align: center;
     margin: 0;
+    overflow: hidden;
 }
 
 .book>:first-child{
