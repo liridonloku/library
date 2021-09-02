@@ -1,3 +1,4 @@
+
 let myLibrary = [
     {
         title: "1984",
@@ -6,6 +7,10 @@ let myLibrary = [
         read: "Yes"
     }
 ];
+
+if(localStorage.myLibrary){
+    myLibrary = JSON.parse(localStorage.myLibrary);
+}
 
 //Book constructor
 function Book(title, author, pages, read){
@@ -17,6 +22,7 @@ function Book(title, author, pages, read){
 
 function addBookToLibrary(newBook){
     myLibrary.push(newBook);
+    localStorage.myLibrary = JSON.stringify(myLibrary);
 }
 
 //create DOM card element for each book
@@ -71,11 +77,13 @@ function toggleRead(){
         myLibrary[this.attributes.data.value].read = "Yes";
         updateLibrary();
     }
+    localStorage.myLibrary = JSON.stringify(myLibrary);
 }
 
 function deleteBook(){
     myLibrary.splice(this.attributes.data.value,1);
     updateLibrary();
+    localStorage.myLibrary = JSON.stringify(myLibrary);
 }
 
 //Create the '+' card
@@ -106,13 +114,16 @@ function updateLibrary(){
     plusButton.addEventListener('click', toggleForm);
 }
 
+let formToggled = false;
 function toggleForm(){
     const form = document.getElementById('form');
     if(form.style.display === 'none' || form.style.display === ''){
         form.style.display = 'flex';
+        formToggled = true;
     }
     else{
         form.style.display = 'none';
+        formToggled = false;
     }
 }
 
@@ -133,7 +144,7 @@ function addBook(){
         alert("Read must be 'yes' or 'no'.");
         return;
     }
-    const newBook = new Book(title.value,author.value,pages.value,read.value);
+    const newBook = new Book(title.value,author.value,parseInt(pages.value).toString(),read.value);
     addBookToLibrary(newBook);
     updateLibrary();
     toggleForm();
@@ -155,10 +166,18 @@ function cancelAdd(){
     toggleForm();
 }
 
+const enterSupport = (e) => {
+    if(formToggled && e.key === 'Enter'){
+        addBook();
+    }
+}
+
 const addButton = document.getElementById('add-button');
 addButton.addEventListener('click', addBook);
 
 const cancelButton = document.getElementById('cancel');
-cancelButton.addEventListener('click', cancelAdd)
+cancelButton.addEventListener('click', cancelAdd);
+
+document.addEventListener('keydown', enterSupport);
 
 updateLibrary();
