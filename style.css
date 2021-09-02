@@ -4,6 +4,7 @@
 }
 
 body{
+    position: relative;
     margin: 0;
     background-color: var(--black);
 }
@@ -22,6 +23,7 @@ body{
 }
 
 .library{
+    color: var(--dark-green);
     width: auto;
     flex: 1 1 auto;
     display: flex;
@@ -30,18 +32,96 @@ body{
     align-content: flex-start;
 }
 
-.book{
+.card{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     height: 240px;
     width: 180px;
 }
 
-.book>p{
-    flex: 1 1 25%;
+.add-book{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 220px;
+    width: 160px;
+    box-shadow: 0 0 3px black;
+    cursor: pointer;
+}
+
+.add-book:hover, .add-book:focus{
+    transition-duration: 200ms;
+    height: 225px;
+    width: 160px;
+    box-shadow: 0 0 5px black;
+    font-size: xx-large;
+}
+
+.add-book>h1{
+    margin: 0;
+    cursor: pointer;
+}
+
+.book{
+    display: flex;
+    flex-direction: column;
+    height: 220px;
+    width: 160px;
+    box-shadow: 0 0 3px black;
+    cursor: pointer;
+}
+
+.book:hover{
+    transition-duration: 200ms;
+    height: 225px;
+    width: 160px;
+    box-shadow: 0 0 5px black;
+}
+
+.book>div{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
     text-align: center;
     margin: 0;
+}
+
+.book>:first-child{
+    height: 30%;
+}
+
+.book>:nth-child(2){
+    height: 30%;
+}
+
+.book>:nth-child(3){
+    height: 15%;
+}
+
+.book>:nth-child(4){
+    height: 15%;
+}
+
+.book>:nth-child(5){
+    height: 10%;
+}
+
+.book>div>p{
+    margin: 0;
+}
+
+.book > div > button{
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    width: 45%;
+    height: 90%;
+    background-color: var(--dark-green);
+    color: var(--black);
 }
 
 .footer{
@@ -56,4 +136,88 @@ body{
 
 .footer > p{
     margin: 0;
+}
+
+.footer>p>a{
+    color: var(--dark-green);
+    text-decoration: none;
+}
+
+.footer>p>a:hover{
+    text-decoration: underline;
+}
+
+.form{
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    height: 80vh;
+    width: 90vw;
+    max-height: 500px;
+    max-width: 400px;
+    background-color: var(--dark-green);
+    color: var(--black);
+    box-shadow: 0 0 10px black;
+    border-radius: 10px;
+}
+
+.form>div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    flex: 1 1 auto;
+}
+
+.form>div>h2{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+}
+
+input{
+    background-color: var(--black);
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    padding-left: 5px;
+    border-radius: 5px;
+    border: none;
+    color: var(--dark-green);
+    caret-color: white;
+}
+
+input:focus, input:hover{
+    outline: none;
+    box-shadow: 0 0 3px white;
+}
+
+.form > .buttons{
+    display: flex;
+    justify-content: space-around !important;
+}
+
+.form > .buttons > button{
+    padding: 0;
+    margin: 0;
+    border: none;
+    border-radius: 5px;
+    max-height: 35px;
+    height: 90%;
+    width: 25%;
+    font-weight: bold;
+    background-color: var(--black);
+    color: var(--dark-green)
+}
+
+button:hover{
+    box-shadow: 0 0 3px white;
 }
