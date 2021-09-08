@@ -57,6 +57,7 @@ function createBookElement(object){
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
     deleteButton.setAttribute('data', myLibrary.indexOf(object).toString());
+    deleteButton.setAttribute('id', 'delete-button');
     deleteButton.addEventListener('click', deleteBook);
     const buttonsDiv = document.createElement('div');
     buttonsDiv.appendChild(readButton);

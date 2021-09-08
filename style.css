@@ -122,7 +122,11 @@ body{
     width: 45%;
     height: 90%;
     background-color: var(--dark-green);
-    color: var(--black);
+    color: #eee;
+}
+
+#delete-button{
+    background-color: darkred;
 }
 
 .footer{
