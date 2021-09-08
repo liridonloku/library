@@ -13,11 +13,13 @@ if(localStorage.myLibrary){
 }
 
 //Book constructor
-function Book(title, author, pages, read){
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
+class Book {
+    constructor(title, author, pages, read) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
+    }
 }
 
 function addBookToLibrary(newBook){
@@ -136,8 +138,8 @@ function addBook(){
         alert('Please fill all the fields.');
         return;
     }
-    if(isNaN(pages.value) || parseFloat(pages.value)%1 != 0){
-        alert('Pages must be a whole number.');
+    if(isNaN(pages.value) || parseFloat(pages.value)%1 != 0 || parseFloat(pages.value) < 1){
+        alert('Pages must be a whole positive number.');
         return;
     }
     if(read.value.toLowerCase() != 'yes' && read.value.toLowerCase() != 'no'){
