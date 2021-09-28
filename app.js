@@ -137,6 +137,7 @@ function addBook(){
     const read = document.getElementById('read');
     if(title.value === '' || author.value === '' || pages.value === '' || read.value === ''){
         alert('Please fill all the fields.');
+        console.log(title.value, author.value, pages.value, read.value);
         return;
     }
     if(isNaN(pages.value) || parseFloat(pages.value)%1 != 0 || parseFloat(pages.value) < 1){
@@ -182,5 +183,26 @@ const cancelButton = document.getElementById('cancel');
 cancelButton.addEventListener('click', cancelAdd);
 
 document.addEventListener('keydown', enterSupport);
+
+
+//Form validation
+( function () {
+    const title = document.getElementById('title');
+    const author = document.getElementById('author');
+    const pages = document.getElementById('pages');
+    const read = document.getElementById('read');
+    title.addEventListener('focusout', () => {
+        title.reportValidity();
+    });
+    author.addEventListener('focusout', () => {
+        author.reportValidity();
+    });
+    pages.addEventListener('focusout', () => {
+        pages.reportValidity();
+    });
+    read.addEventListener('focusout', () => {
+        read.reportValidity();
+    });
+})();
 
 updateLibrary();

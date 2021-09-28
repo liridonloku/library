@@ -28,16 +28,16 @@
         <div class="form" id="form">
             <div><h2>Add New Book</h2></div>
             <div class="title">
-                <h3>Title:</h3><input type="text" name="title" id="title">
+                <h3>Title:</h3><input type="text" name="title" id="title" required>
             </div>
             <div class="author">
-                <h3>Author:</h3><input type="text" name="author" id="author">
+                <h3>Author:</h3><input type="text" name="author" id="author" required>
             </div>
             <div class="pages">
-                <h3>Pages:</h3><input type="text" name="pages" id="pages">
+                <h3>Pages (number):</h3><input type="number" name="pages" id="pages" min="1" required>
             </div>
             <div class="read">
-                <h3>Read (Yes/No):</h3><input type="text" name="read" id="read">
+                <h3>Read (Yes/No):</h3><input type="text" name="read" id="read" required pattern="[Yy]es|[Nn]o">
             </div>
             <div class="buttons">
                 <button id="add-button">Add Book</button>
