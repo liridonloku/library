@@ -172,6 +172,7 @@ function cancelAdd(){
 
 const enterSupport = (e) => {
     if(formToggled && e.key === 'Enter'){
+        e.preventDefault();
         addBook();
     }
 }
