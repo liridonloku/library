@@ -172,7 +172,13 @@ function cancelAdd(){
 
 const enterSupport = (e) => {
     if(formToggled && e.key === 'Enter'){
-        e.preventDefault();
+        if(document.activeElement.id === 'add-button'){
+            e.preventDefault();
+            console.log('works');
+        }
+        if(document.activeElement.id === 'cancel'){
+            return;
+        }
         addBook();
     }
 }
