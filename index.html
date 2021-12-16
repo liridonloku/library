@@ -16,6 +16,12 @@
     <div class="container">
       <div class="header">
         <h1>Library</h1>
+        <button class="sign-in">Sign In</button>
+        <div class="user invisible">
+          <img class="user-image" hidden></img>
+          <p class="user-name" hidden></p>
+          <button class="sign-out" hidden>Sign Out</button>
+        </div>
       </div>
       <div class="library">
         <div class="card" id="add-new">
@@ -59,30 +65,6 @@
         <button id="cancel">Cancel</button>
       </div>
     </div>
-    <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      import {
-        getFirestore,
-        collection,
-        getDocs,
-      } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-      // https://firebase.google.com/docs/web/setup#available-libraries
-
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyCNDLT9ypRJDotHUSZ_-J3Cagy8BM7vDBk",
-        authDomain: "library-b4865.firebaseapp.com",
-        projectId: "library-b4865",
-        storageBucket: "library-b4865.appspot.com",
-        messagingSenderId: "206998508281",
-        appId: "1:206998508281:web:0e3421199238e722f54828",
-      };
-
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-    </script>
+    <script type="module"></script>
   </body>
 </html>

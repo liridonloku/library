@@ -1,205 +1,241 @@
-:root{
-    --dark-green: #006B38FF;
-    --black: #101820FF;
+:root {
+  --dark-green: #006b38ff;
+  --black: #101820ff;
 }
 
-body{
-    position: relative;
-    margin: 0;
-    background-color: var(--black);
+body {
+  position: relative;
+  margin: 0;
+  background-color: var(--black);
 }
 
 .container {
-    height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.header{
-    display: flex;
-    justify-content: center;
-    color: var(--dark-green);
+.header {
+  display: flex;
+  align-items: center;
+  color: var(--dark-green);
+  flex-wrap: wrap;
 }
 
-.library{
-    color: var(--dark-green);
-    width: auto;
-    flex: 1 1 auto;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: flex-start;
+.header > h1 {
+  flex-grow: 1;
+  padding-left: 20px;
 }
 
-.card{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 240px;
-    width: 180px;
+.user {
+  justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
 }
 
-.add-book{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 220px;
-    width: 160px;
-    box-shadow: 0 0 3px black;
-    cursor: pointer;
+.user.invisible {
+  display: none;
 }
 
-.add-book:hover, .add-book:focus{
-    transition-duration: 200ms;
-    height: 225px;
-    width: 160px;
-    box-shadow: 0 0 5px black;
-    font-size: xx-large;
+.user-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 5px;
 }
 
-.add-book>h1{
-    margin: 0;
-    cursor: pointer;
+.header > button,
+.header > div > button {
+  margin: 0 10px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  height: auto;
+  background-color: #0050b8;
+  color: #eee;
 }
 
-.book{
-    display: flex;
-    flex-direction: column;
-    height: 220px;
-    width: 160px;
-    box-shadow: 0 0 3px black;
-    cursor: pointer;
+.library {
+  color: var(--dark-green);
+  width: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: flex-start;
 }
 
-.book:hover{
-    transition-duration: 200ms;
-    height: 225px;
-    width: 160px;
-    box-shadow: 0 0 5px black;
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 240px;
+  width: 180px;
 }
 
-.book>div{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    text-align: center;
-    margin: 0;
-    overflow: hidden;
+.add-book {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 220px;
+  width: 160px;
+  box-shadow: 0 0 3px black;
+  cursor: pointer;
 }
 
-.book>:first-child{
-    height: 30%;
+.add-book:hover,
+.add-book:focus {
+  transition-duration: 200ms;
+  height: 225px;
+  width: 160px;
+  box-shadow: 0 0 5px black;
+  font-size: xx-large;
 }
 
-.book>:nth-child(2){
-    height: 30%;
+.add-book > h1 {
+  margin: 0;
+  cursor: pointer;
 }
 
-.book>:nth-child(3){
-    height: 15%;
+.book {
+  display: flex;
+  flex-direction: column;
+  height: 220px;
+  width: 160px;
+  box-shadow: 0 0 3px black;
+  cursor: pointer;
 }
 
-.book>:nth-child(4){
-    height: 15%;
+.book:hover {
+  transition-duration: 200ms;
+  height: 225px;
+  width: 160px;
+  box-shadow: 0 0 5px black;
 }
 
-.book>:nth-child(5){
-    height: 10%;
+.book > div {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  margin: 0;
+  overflow: hidden;
 }
 
-.book>div>p{
-    margin: 0;
+.book > :first-child {
+  height: 30%;
 }
 
-.book > div > button{
-    margin: 0;
-    padding: 0;
-    border: none;
-    border-radius: 5px;
-    width: 45%;
-    height: 90%;
-    background-color: var(--dark-green);
-    color: #eee;
+.book > :nth-child(2) {
+  height: 30%;
 }
 
-#delete-button{
-    background-color: darkred;
+.book > :nth-child(3) {
+  height: 15%;
 }
 
-.footer{
-    justify-self: end;
-    height: 40px;
-    flex: 0 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--dark-green)
+.book > :nth-child(4) {
+  height: 15%;
 }
 
-.footer > p{
-    margin: 0;
+.book > :nth-child(5) {
+  height: 10%;
 }
 
-.footer>p>a{
-    color: var(--dark-green);
-    text-decoration: none;
+.book > div > p {
+  margin: 0;
 }
 
-.footer>p>a:hover{
-    text-decoration: underline;
+.book > div > button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  width: 45%;
+  height: 90%;
+  background-color: var(--dark-green);
+  color: #eee;
 }
 
-.form{
-    display: none;
-    flex-direction: column;
-    justify-content: space-around;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    height: 80vh;
-    width: 90vw;
-    max-height: 500px;
-    max-width: 400px;
-    background-color: var(--dark-green);
-    color: var(--black);
-    box-shadow: 0 0 10px black;
-    border-radius: 10px;
+#delete-button {
+  background-color: darkred;
 }
 
-.form>div{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 10px;
-    padding-right: 10px;
-    flex: 1 1 auto;
+.footer {
+  justify-self: end;
+  height: 40px;
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--dark-green);
 }
 
-.form>div>h2{
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    text-align: center;
+.footer > p {
+  margin: 0;
 }
 
-input{
-    background-color: var(--black);
-    height: 28px;
-    margin: 0;
-    padding: 0;
-    padding-left: 5px;
-    border-radius: 5px;
-    border: none;
-    color: var(--dark-green);
-    caret-color: white;
+.footer > p > a {
+  color: var(--dark-green);
+  text-decoration: none;
 }
 
+.footer > p > a:hover {
+  text-decoration: underline;
+}
+
+.form {
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  height: 80vh;
+  width: 90vw;
+  max-height: 500px;
+  max-width: 400px;
+  background-color: var(--dark-green);
+  color: var(--black);
+  box-shadow: 0 0 10px black;
+  border-radius: 10px;
+}
+
+.form > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  flex: 1 1 auto;
+}
+
+.form > div > h2 {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+
+input {
+  background-color: var(--black);
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  padding-left: 5px;
+  border-radius: 5px;
+  border: none;
+  color: var(--dark-green);
+  caret-color: white;
+}
 
 /* Remove arrows on pages input */
 /* Chrome, Safari, Edge, Opera */
@@ -210,33 +246,34 @@ input::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
-input:focus, input:hover{
-    outline: none;
-    box-shadow: 0 0 3px white;
+input:focus,
+input:hover {
+  outline: none;
+  box-shadow: 0 0 3px white;
 }
 
-.form > .buttons{
-    display: flex;
-    justify-content: space-around !important;
+.form > .buttons {
+  display: flex;
+  justify-content: space-around !important;
 }
 
-.form > .buttons > button{
-    padding: 0;
-    margin: 0;
-    border: none;
-    border-radius: 5px;
-    max-height: 35px;
-    height: 90%;
-    width: 25%;
-    font-weight: bold;
-    background-color: var(--black);
-    color: var(--dark-green)
+.form > .buttons > button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 5px;
+  max-height: 35px;
+  height: 90%;
+  width: 25%;
+  font-weight: bold;
+  background-color: var(--black);
+  color: var(--dark-green);
 }
 
-button:hover{
-    box-shadow: 0 0 3px white;
+button:hover {
+  box-shadow: 0 0 3px white;
 }

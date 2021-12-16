@@ -1,5 +1,6 @@
 // Import firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+
 // TODO: Add SDKs for Firebase products
 import {
   getFirestore,
@@ -7,7 +8,21 @@ import {
   addDoc,
   getDocs,
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 // https://firebase.google.com/docs/web/setup#available-libraries
+
+const profileImage = document.querySelector(".user-image");
+const profileName = document.querySelector(".user-name");
+const userInfo = document.querySelector(".user");
+const signInButton = document.querySelector(".sign-in");
+const signOutButton = document.querySelector(".sign-out");
 
 // Firebase configuration
 const firebaseConfig = {
@@ -22,6 +37,79 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth();
+
+async function signIn() {
+  // Sign in Firebase using popup auth and Google as the identity provider.
+  var provider = new GoogleAuthProvider();
+  await signInWithPopup(getAuth(), provider);
+}
+
+function signOutUser() {
+  // Sign out of Firebase.
+  signOut(getAuth());
+}
+
+// Initialize firebase auth
+function initFirebaseAuth() {
+  // Listen to auth state changes.
+  onAuthStateChanged(getAuth(), authStateObserver);
+}
+initFirebaseAuth();
+
+// Returns the signed-in user's profile Pic URL.
+function getProfilePicUrl() {
+  return getAuth().currentUser.photoURL || "/images/profile_placeholder.png";
+}
+
+// Returns the signed-in user's display name.
+function getUserName() {
+  return getAuth().currentUser.displayName;
+}
+
+// Returns true if a user is signed-in.
+function isUserSignedIn() {
+  return !!getAuth().currentUser;
+}
+
+function authStateObserver(user) {
+  if (user) {
+    // User is signed in!
+    // Get the signed-in user's profile pic and name.
+    let profilePicUrl = getProfilePicUrl();
+    let userName = getUserName();
+
+    // Set the user's profile pic and name.
+    profileImage.setAttribute("src", addSizeToGoogleProfilePic(profilePicUrl));
+    profileName.textContent = userName;
+
+    // Show user's profile and sign-out button.
+    userInfo.classList.remove("invisible");
+    profileImage.removeAttribute("hidden");
+    profileName.removeAttribute("hidden");
+    signOutButton.removeAttribute("hidden");
+
+    // Hide sign-in button.
+    signInButton.setAttribute("hidden", "true");
+  } else {
+    // User is signed out!
+    // Hide user's profile and sign-out button.
+    userInfo.classList.add("invisible");
+    profileName.setAttribute("hidden", "true");
+    profileImage.setAttribute("hidden", "true");
+    signOutButton.setAttribute("hidden", "true");
+
+    // Show sign-in button.
+    signInButton.removeAttribute("hidden");
+  }
+}
+
+function addSizeToGoogleProfilePic(url) {
+  if (url.indexOf("googleusercontent.com") !== -1 && url.indexOf("?") === -1) {
+    return url + "?sz=150";
+  }
+  return url;
+}
 
 const addToDatabase = async (newBook) => {
   try {
@@ -249,6 +337,9 @@ const cancelButton = document.getElementById("cancel");
 cancelButton.addEventListener("click", cancelAdd);
 
 document.addEventListener("keydown", enterSupport);
+
+signInButton.addEventListener("click", signIn);
+signOutButton.addEventListener("click", signOutUser);
 
 //Form validation
 (function () {
