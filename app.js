@@ -8,8 +8,10 @@ import {
   query,
   addDoc,
   setDoc,
+  updateDoc,
   doc,
   getDocs,
+  deleteDoc,
   where,
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
@@ -135,26 +137,16 @@ const addToDatabase = async (newBook) => {
   }
 };
 
-const getDocument = async (id) => {
+const getQuery = async (id) => {
   let q = query(
     collection(db, "users", `${userId}`, "books"),
-    where("title", "==", id)
+    where("id", "==", id)
   );
   let snapShot = await getDocs(q);
-  snapShot.forEach((book) => {
-    console.log(book.data());
-  });
+  return snapShot;
 };
 
-let myLibrary = [
-  {
-    title: "1984",
-    author: "George Orwell",
-    pages: 360,
-    read: "Yes",
-    id: "1",
-  },
-];
+let myLibrary = [];
 
 //Check database
 const getFromDatabase = async () => {
@@ -212,11 +204,11 @@ function createBookElement(object) {
   readDiv.appendChild(read);
   const readButton = document.createElement("button");
   readButton.textContent = "Read";
-  readButton.setAttribute("data", myLibrary.indexOf(object).toString());
+  readButton.setAttribute("data", object.id);
   readButton.addEventListener("click", toggleRead);
   const deleteButton = document.createElement("button");
   deleteButton.textContent = "Delete";
-  deleteButton.setAttribute("data", myLibrary.indexOf(object).toString());
+  deleteButton.setAttribute("data", object.id);
   deleteButton.setAttribute("id", "delete-button");
   deleteButton.addEventListener("click", deleteBook);
   const buttonsDiv = document.createElement("div");
@@ -231,21 +223,46 @@ function createBookElement(object) {
   return card;
 }
 
-function toggleRead() {
-  if (myLibrary[this.attributes.data.value].read.toLowerCase() === "yes") {
-    myLibrary[this.attributes.data.value].read = "No";
-    updateLibrary();
+async function toggleRead() {
+  let readStatus;
+  let newLibrary = myLibrary.map((book) => {
+    if (book.id === this.attributes.data.value) {
+      book.read.toLowerCase() === "yes"
+        ? (book.read = "No")
+        : (book.read = "Yes");
+      readStatus = book.read;
+      return book;
+    }
+    return book;
+  });
+  myLibrary = newLibrary;
+  updateLibrary();
+  if (isUserSignedIn) {
+    let query = await getQuery(this.attributes.data.value);
+    query.forEach((doc) => {
+      updateDoc(doc.ref, {
+        read: readStatus,
+      });
+    });
   } else {
-    myLibrary[this.attributes.data.value].read = "Yes";
-    updateLibrary();
+    localStorage.myLibrary = JSON.stringify(myLibrary);
   }
-  localStorage.myLibrary = JSON.stringify(myLibrary);
 }
 
-function deleteBook() {
-  myLibrary.splice(this.attributes.data.value, 1);
+async function deleteBook() {
+  let newLibrary = myLibrary.filter(
+    (book) => book.id !== this.attributes.data.value
+  );
+  myLibrary = newLibrary;
   updateLibrary();
-  localStorage.myLibrary = JSON.stringify(myLibrary);
+  if (isUserSignedIn) {
+    let query = await getQuery(this.attributes.data.value);
+    query.forEach((doc) => {
+      deleteDoc(doc.ref);
+    });
+  } else {
+    localStorage.myLibrary = JSON.stringify(myLibrary);
+  }
 }
 
 //Create the '+' card
@@ -315,8 +332,8 @@ function addBook() {
     alert("Read must be 'yes' or 'no'.");
     return;
   }
-  let id =
-    Date.now().toString(16) + Math.random().toString(16) + "0".repeat(16);
+  let id = Date.now().toString(16) + Math.random().toString(16) + "0".repeat(4);
+  console.log(id);
   const newBook = new Book(
     title.value,
     author.value,
