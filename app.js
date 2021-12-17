@@ -5,8 +5,12 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import {
   getFirestore,
   collection,
+  query,
   addDoc,
+  setDoc,
+  doc,
   getDocs,
+  where,
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 import {
@@ -38,6 +42,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth();
+let userId;
 
 async function signIn() {
   // Sign in Firebase using popup auth and Google as the identity provider.
@@ -78,6 +83,8 @@ function authStateObserver(user) {
     // Get the signed-in user's profile pic and name.
     let profilePicUrl = getProfilePicUrl();
     let userName = getUserName();
+    userId = getAuth().currentUser.uid;
+    getFromDatabase();
 
     // Set the user's profile pic and name.
     profileImage.setAttribute("src", addSizeToGoogleProfilePic(profilePicUrl));
@@ -113,15 +120,30 @@ function addSizeToGoogleProfilePic(url) {
 
 const addToDatabase = async (newBook) => {
   try {
-    const docRef = await addDoc(collection(db, "books"), {
-      title: newBook.title,
-      author: newBook.author,
-      pages: newBook.pages,
-      read: newBook.read,
-    });
+    const docRef = await addDoc(
+      collection(db, "users", `${getAuth().currentUser.uid}`, "books"),
+      {
+        title: newBook.title,
+        author: newBook.author,
+        pages: newBook.pages,
+        read: newBook.read,
+        id: newBook.id,
+      }
+    );
   } catch (e) {
     console.error("Error adding book to database", e);
   }
+};
+
+const getDocument = async (id) => {
+  let q = query(
+    collection(db, "users", `${userId}`, "books"),
+    where("title", "==", id)
+  );
+  let snapShot = await getDocs(q);
+  snapShot.forEach((book) => {
+    console.log(book.data());
+  });
 };
 
 let myLibrary = [
@@ -130,36 +152,39 @@ let myLibrary = [
     author: "George Orwell",
     pages: 360,
     read: "Yes",
+    id: "1",
   },
 ];
 
 //Check database
 const getFromDatabase = async () => {
-  const querySnapshot = await getDocs(collection(db, "books"));
-  console.log(querySnapshot.size);
+  const querySnapshot = await getDocs(
+    collection(db, "users", `${userId}`, "books")
+  );
+  let newLibrary = [];
   querySnapshot.forEach((book) => {
-    console.log(book.data());
+    newLibrary.push(book.data());
   });
-  if (localStorage.myLibrary) {
-    myLibrary = JSON.parse(localStorage.myLibrary);
-  }
+  myLibrary = newLibrary;
+  updateLibrary();
 };
-getFromDatabase();
 
 //Book constructor
 class Book {
-  constructor(title, author, pages, read) {
+  constructor(title, author, pages, read, id) {
     this.title = title;
     this.author = author;
     this.pages = pages;
     this.read = read;
+    this.id = id;
   }
 }
 
 function addBookToLibrary(newBook) {
   myLibrary.push(newBook);
-  addToDatabase(newBook);
-  localStorage.myLibrary = JSON.stringify(myLibrary);
+  isUserSignedIn
+    ? addToDatabase(newBook)
+    : (localStorage.myLibrary = JSON.stringify(myLibrary));
 }
 
 //create DOM card element for each book
@@ -290,11 +315,14 @@ function addBook() {
     alert("Read must be 'yes' or 'no'.");
     return;
   }
+  let id =
+    Date.now().toString(16) + Math.random().toString(16) + "0".repeat(16);
   const newBook = new Book(
     title.value,
     author.value,
     parseInt(pages.value).toString(),
-    read.value
+    read.value,
+    id
   );
   addBookToLibrary(newBook);
   updateLibrary();
