@@ -6,6 +6,7 @@ import {
   getFirestore,
   collection,
   query,
+  orderBy,
   addDoc,
   setDoc,
   updateDoc,
@@ -13,6 +14,7 @@ import {
   getDocs,
   deleteDoc,
   where,
+  Timestamp,
 } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
 import {
@@ -45,6 +47,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth();
 let userId;
+let myLibrary = [];
 
 async function signIn() {
   // Sign in Firebase using popup auth and Google as the identity provider.
@@ -113,6 +116,13 @@ function authStateObserver(user) {
   }
 }
 
+const getFromLocalStorage = () => {
+  if (localStorage.myLibrary) {
+    myLibrary = JSON.parse(localStorage.myLibrary);
+  }
+};
+getFromLocalStorage();
+
 function addSizeToGoogleProfilePic(url) {
   if (url.indexOf("googleusercontent.com") !== -1 && url.indexOf("?") === -1) {
     return url + "?sz=150";
@@ -130,35 +140,45 @@ const addToDatabase = async (newBook) => {
         pages: newBook.pages,
         read: newBook.read,
         id: newBook.id,
+        date: Timestamp.now(),
       }
     );
-  } catch (e) {
-    console.error("Error adding book to database", e);
+  } catch (error) {
+    console.error("Error adding book to database", error);
   }
 };
 
 const getQuery = async (id) => {
-  let q = query(
-    collection(db, "users", `${userId}`, "books"),
-    where("id", "==", id)
-  );
-  let snapShot = await getDocs(q);
-  return snapShot;
+  try {
+    let q = query(
+      collection(db, "users", `${userId}`, "books"),
+      where("id", "==", id)
+    );
+    let snapShot = await getDocs(q);
+    return snapShot;
+  } catch (error) {
+    console.error("Error retrieving data", error);
+  }
 };
-
-let myLibrary = [];
 
 //Check database
 const getFromDatabase = async () => {
-  const querySnapshot = await getDocs(
-    collection(db, "users", `${userId}`, "books")
-  );
-  let newLibrary = [];
-  querySnapshot.forEach((book) => {
-    newLibrary.push(book.data());
-  });
-  myLibrary = newLibrary;
-  updateLibrary();
+  try {
+    let q = query(
+      collection(db, "users", `${userId}`, "books"),
+      orderBy("date")
+    );
+    const querySnapshot = await getDocs(q);
+    let newLibrary = [];
+    querySnapshot.forEach((book) => {
+      newLibrary.push(book.data());
+      console.log(book.data().date);
+    });
+    myLibrary = newLibrary;
+    updateLibrary();
+  } catch (error) {
+    console.error("Error retrieving data", error);
+  }
 };
 
 //Book constructor
@@ -177,6 +197,48 @@ function addBookToLibrary(newBook) {
   isUserSignedIn
     ? addToDatabase(newBook)
     : (localStorage.myLibrary = JSON.stringify(myLibrary));
+}
+
+async function toggleRead() {
+  let readStatus;
+  let newLibrary = myLibrary.map((book) => {
+    if (book.id === this.attributes.data.value) {
+      book.read.toLowerCase() === "yes"
+        ? (book.read = "No")
+        : (book.read = "Yes");
+      readStatus = book.read;
+      return book;
+    }
+    return book;
+  });
+  myLibrary = newLibrary;
+  updateLibrary();
+  if (isUserSignedIn) {
+    let query = await getQuery(this.attributes.data.value);
+    query.forEach((doc) => {
+      updateDoc(doc.ref, {
+        read: readStatus,
+      });
+    });
+  } else {
+    localStorage.myLibrary = JSON.stringify(myLibrary);
+  }
+}
+
+async function deleteBook() {
+  let newLibrary = myLibrary.filter(
+    (book) => book.id !== this.attributes.data.value
+  );
+  myLibrary = newLibrary;
+  updateLibrary();
+  if (isUserSignedIn) {
+    let query = await getQuery(this.attributes.data.value);
+    query.forEach((doc) => {
+      deleteDoc(doc.ref);
+    });
+  } else {
+    localStorage.myLibrary = JSON.stringify(myLibrary);
+  }
 }
 
 //create DOM card element for each book
@@ -221,48 +283,6 @@ function createBookElement(object) {
   book.appendChild(buttonsDiv);
   card.appendChild(book);
   return card;
-}
-
-async function toggleRead() {
-  let readStatus;
-  let newLibrary = myLibrary.map((book) => {
-    if (book.id === this.attributes.data.value) {
-      book.read.toLowerCase() === "yes"
-        ? (book.read = "No")
-        : (book.read = "Yes");
-      readStatus = book.read;
-      return book;
-    }
-    return book;
-  });
-  myLibrary = newLibrary;
-  updateLibrary();
-  if (isUserSignedIn) {
-    let query = await getQuery(this.attributes.data.value);
-    query.forEach((doc) => {
-      updateDoc(doc.ref, {
-        read: readStatus,
-      });
-    });
-  } else {
-    localStorage.myLibrary = JSON.stringify(myLibrary);
-  }
-}
-
-async function deleteBook() {
-  let newLibrary = myLibrary.filter(
-    (book) => book.id !== this.attributes.data.value
-  );
-  myLibrary = newLibrary;
-  updateLibrary();
-  if (isUserSignedIn) {
-    let query = await getQuery(this.attributes.data.value);
-    query.forEach((doc) => {
-      deleteDoc(doc.ref);
-    });
-  } else {
-    localStorage.myLibrary = JSON.stringify(myLibrary);
-  }
 }
 
 //Create the '+' card
