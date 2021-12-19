@@ -110,6 +110,8 @@ function authStateObserver(user) {
     profileName.setAttribute("hidden", "true");
     profileImage.setAttribute("hidden", "true");
     signOutButton.setAttribute("hidden", "true");
+    getFromLocalStorage();
+    updateLibrary();
 
     // Show sign-in button.
     signInButton.removeAttribute("hidden");
@@ -119,6 +121,8 @@ function authStateObserver(user) {
 const getFromLocalStorage = () => {
   if (localStorage.myLibrary) {
     myLibrary = JSON.parse(localStorage.myLibrary);
+  } else {
+    myLibrary = [];
   }
 };
 getFromLocalStorage();
@@ -172,7 +176,6 @@ const getFromDatabase = async () => {
     let newLibrary = [];
     querySnapshot.forEach((book) => {
       newLibrary.push(book.data());
-      console.log(book.data().date);
     });
     myLibrary = newLibrary;
     updateLibrary();
@@ -192,9 +195,9 @@ class Book {
   }
 }
 
-function addBookToLibrary(newBook) {
+async function addBookToLibrary(newBook) {
   myLibrary.push(newBook);
-  isUserSignedIn
+  isUserSignedIn()
     ? addToDatabase(newBook)
     : (localStorage.myLibrary = JSON.stringify(myLibrary));
 }
@@ -213,7 +216,7 @@ async function toggleRead() {
   });
   myLibrary = newLibrary;
   updateLibrary();
-  if (isUserSignedIn) {
+  if (isUserSignedIn()) {
     let query = await getQuery(this.attributes.data.value);
     query.forEach((doc) => {
       updateDoc(doc.ref, {
@@ -231,7 +234,7 @@ async function deleteBook() {
   );
   myLibrary = newLibrary;
   updateLibrary();
-  if (isUserSignedIn) {
+  if (isUserSignedIn()) {
     let query = await getQuery(this.attributes.data.value);
     query.forEach((doc) => {
       deleteDoc(doc.ref);
@@ -337,7 +340,6 @@ function addBook() {
     read.value === ""
   ) {
     alert("Please fill all the fields.");
-    console.log(title.value, author.value, pages.value, read.value);
     return;
   }
   if (
@@ -353,7 +355,6 @@ function addBook() {
     return;
   }
   let id = Date.now().toString(16) + Math.random().toString(16) + "0".repeat(4);
-  console.log(id);
   const newBook = new Book(
     title.value,
     author.value,
@@ -386,7 +387,6 @@ const enterSupport = (e) => {
   if (formToggled && e.key === "Enter") {
     if (document.activeElement.id === "add-button") {
       e.preventDefault();
-      console.log("works");
     }
     if (document.activeElement.id === "cancel") {
       return;
